@@ -47,7 +47,7 @@ def get_module_by_index(data_list, index):
     return res
 
 
-def find_all_dependency_modules(data_list, starting_index_list, ignore_module_not_found_error=True):
+def find_all_dependency_modules(data_list, starting_index_list, module_extraction_key="full_text", ignore_module_not_found_error=True):
     dep_modules_set = set()
     visited_index_set = set()
     bfs_index_queue = [i for i in starting_index_list]
@@ -56,7 +56,8 @@ def find_all_dependency_modules(data_list, starting_index_list, ignore_module_no
         visited_index_set.add(_cur_index)
         try:
             _cur_module = get_module_by_index(data_list=data_list, index=_cur_index)
-            dep_modules_set.add(_cur_module['full_code'])
+            assert module_extraction_key in _cur_module.keys(), f'key: {module_extraction_key} not found in module with index {_cur_index}'
+            dep_modules_set.add(_cur_module[module_extraction_key])
             for _c in _cur_module['children']:
                 if _c not in visited_index_set:
                     bfs_index_queue.append(_c)
